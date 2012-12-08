@@ -12,15 +12,15 @@ namespace Indexer1
             : base(input)
         {
             _normalizer = new PersianNormalizer();
-            _termAtt = input.AddAttribute<TermAttribute>();
+            _termAtt = (TermAttribute)input.AddAttribute<ITermAttribute>();
         }
 
         public override bool IncrementToken()
         {
             if (input.IncrementToken())
             {
-                int newLen = _normalizer.Normalize(_termAtt.TermBuffer(), _termAtt.TermLength());
-                _termAtt.SetTermLength(newLen);
+                string normalized =  _normalizer.Normalize(_termAtt.Term, _termAtt.TermLength());
+                _termAtt.SetTermBuffer(normalized);
                 return true;
             }
             return false;

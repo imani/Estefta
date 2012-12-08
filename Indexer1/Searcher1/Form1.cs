@@ -19,14 +19,14 @@ namespace Searcher1
         private String path = @"D:\ComputerEngineer\Meshhkat\Ahkam2\second_edit\";
         public IndexSearcher searcher;
         public QueryParser parser;
-        public Lucene.Net.Analysis.SimpleAnalyzer analyzer;
+        public Indexer1.MyAnalyzer my_analyzer;
         public Form1()
         {
             InitializeComponent();
-            Lucene.Net.Store.Directory dir = FSDirectory.Open(@"D:\ComputerEngineer\Meshhkat\Indexer1\Indexer1\bin\Debug\LuceneIndex");
+            Lucene.Net.Store.Directory dir = FSDirectory.Open(@"..\..\..\LuceneIndex");
             searcher = new IndexSearcher(dir, true);
-            analyzer = new Lucene.Net.Analysis.SimpleAnalyzer();
-            parser = new QueryParser(Lucene.Net.Util.Version.LUCENE_CURRENT, "text", analyzer);
+            my_analyzer = new Indexer1.MyAnalyzer(Lucene.Net.Util.Version.LUCENE_CURRENT);
+            parser = new QueryParser(Lucene.Net.Util.Version.LUCENE_CURRENT, "text", my_analyzer);
             
 
 

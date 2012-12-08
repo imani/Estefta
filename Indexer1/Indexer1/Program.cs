@@ -19,7 +19,7 @@ namespace Indexer1
         static void Main(string[] args)
         {
         
-           Lucene.Net.Store.Directory index_dir = FSDirectory.Open("LuceneIndex");
+           Lucene.Net.Store.Directory index_dir = FSDirectory.Open(@"..\..\..\LuceneIndex");
            Analyzer analyzer = new MyAnalyzer(Lucene.Net.Util.Version.LUCENE_CURRENT);
            IndexWriter writer = new IndexWriter(index_dir, analyzer, IndexWriter.MaxFieldLength.UNLIMITED);
            

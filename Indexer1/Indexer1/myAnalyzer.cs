@@ -10,18 +10,16 @@ using System.IO;
 
 namespace Indexer1
 {
-    class MyAnalyzer : Analyzer 
+    public class MyAnalyzer : Analyzer 
     {
         private readonly Version _version;
         private readonly HashSet<String> _stoptable = new HashSet<String>();
-        public static string DefaultStopwordFile = "PersianStopWords.txt";
+        public static string DefaultStopwordFile = "PersianStopwords.txt";
 
         public MyAnalyzer(Version version)
         {
             _version = version;
-            var fileStream =
-                System.Reflection.Assembly.GetAssembly(GetType()).GetManifestResourceStream("Lucene.Net.Analysis.Fa." +
-                                                                                                 DefaultStopwordFile);
+            var fileStream = new FileStream(@"..\..\..\Indexer1\" + DefaultStopwordFile,FileMode.Open);
             if (fileStream != null)
                 using (var reader = new StreamReader(fileStream))
                 {
