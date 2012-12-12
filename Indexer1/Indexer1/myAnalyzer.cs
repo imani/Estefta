@@ -26,7 +26,11 @@ namespace Indexer1
                     while (!reader.EndOfStream)
                     {
                         var word = reader.ReadLine();
-                        if (word != null) _stoptable.Add(word);
+                        if (word != null)
+                        {
+                            word = SCICT.NLP.Utility.StringUtil.RefineAndFilterPersianWord(word); // Normalize characters of stop words
+                            _stoptable.Add(word);
+                        }
                     }
                 }
         }
