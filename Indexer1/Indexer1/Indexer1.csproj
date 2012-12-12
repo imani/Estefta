@@ -53,6 +53,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="myAnalyzer.cs" />
+    <Compile Include="PersianLemmatizationFilter.cs" />
+    <Compile Include="PersianLemmatizer.cs" />
     <Compile Include="PersianNormalizationFilter.cs" />
     <Compile Include="PersianNormalizer.cs" />
     <Compile Include="PersianStemFilter.cs" />

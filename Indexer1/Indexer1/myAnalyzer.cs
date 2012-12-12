@@ -47,7 +47,7 @@ namespace Indexer1
             result = new LowerCaseFilter(result);
             result = new PersianNormalizationFilter(result);
             result = new StopFilter(StopFilter.GetEnablePositionIncrementsVersionDefault(_version), result, _stoptable);         
-            //result = new PersianStemFilter(result);
+            result = new PersianLemmatizationFilter(result);
             return result;
         }
     }
