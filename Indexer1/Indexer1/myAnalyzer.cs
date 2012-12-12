@@ -43,7 +43,7 @@ namespace Indexer1
 
         public override TokenStream TokenStream(string fieldname, TextReader reader)
         {
-            TokenStream result = new StandardTokenizer(_version, reader);
+            TokenStream result = new PersianTokenizer(reader);
             result = new LowerCaseFilter(result);
             result = new PersianNormalizationFilter(result);
             result = new StopFilter(StopFilter.GetEnablePositionIncrementsVersionDefault(_version), result, _stoptable);         

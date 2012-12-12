@@ -59,6 +59,7 @@
     <Compile Include="PersianNormalizer.cs" />
     <Compile Include="PersianStemFilter.cs" />
     <Compile Include="PersianStemmer.cs" />
+    <Compile Include="PersianTokenizer.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
