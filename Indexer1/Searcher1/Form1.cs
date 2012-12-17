@@ -46,8 +46,8 @@ namespace Searcher1
             var result = searcher.Search(query,10);
             foreach (ScoreDoc sd in result.ScoreDocs)
             {
-                //if (sd.Score < 0.8)
-                  //  continue;
+                if (sd.Score < 0.1)
+                    continue;
                 var resdoc = searcher.Doc(sd.Doc);
                 XPathDocument xdoc = new XPathDocument(path + resdoc.Get("file"));
                 XPathNavigator nav = xdoc.CreateNavigator();
