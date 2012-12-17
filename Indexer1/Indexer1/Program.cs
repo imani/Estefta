@@ -19,7 +19,7 @@ namespace Indexer1
         static void Main(string[] args)
         {
         
-           Lucene.Net.Store.Directory index_dir = FSDirectory.Open(@"..\..\..\LuceneIndex(subcat_not_anal)");
+           Lucene.Net.Store.Directory index_dir = FSDirectory.Open(@"..\..\..\LuceneIndex");
            Analyzer analyzer = new MyAnalyzer(Lucene.Net.Util.Version.LUCENE_CURRENT);
            IndexWriter writer = new IndexWriter(index_dir, analyzer, IndexWriter.MaxFieldLength.UNLIMITED);
            
@@ -44,7 +44,6 @@ namespace Indexer1
                         cat.Boost = 2.0f;
                         String s = xreader.GetAttribute("subcat");
                         Field subcat = new Field("subcat", xreader.GetAttribute("subcat"), Field.Store.YES, Field.Index.NOT_ANALYZED);
-                        subcat.Boost = 3.0f;
                         if (xreader.Name == "question")
                             type = "question";
 
