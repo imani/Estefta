@@ -19,13 +19,14 @@ namespace Indexer1
         static void Main(string[] args)
         {
         
-           Lucene.Net.Store.Directory index_dir = FSDirectory.Open(@"..\..\..\LuceneIndex");
+           Lucene.Net.Store.Directory index_dir = FSDirectory.Open(@"..\..\..\LuceneIndex(subcat_not_anal)");
            Analyzer analyzer = new MyAnalyzer(Lucene.Net.Util.Version.LUCENE_CURRENT);
            IndexWriter writer = new IndexWriter(index_dir, analyzer, IndexWriter.MaxFieldLength.UNLIMITED);
            
             //reading files
             String path = @"D:\ComputerEngineer\Meshhkat\Ahkam2\second_edit\";
             DirectoryInfo dir = new DirectoryInfo(path);
+            int counter = 0;
             foreach (FileInfo file in dir.GetFiles())
             {
                 StreamReader reader = new StreamReader(file.FullName);
@@ -41,7 +42,8 @@ namespace Indexer1
                         doc = new Document();
                         Field cat = new Field("cat", xreader.GetAttribute("cat"),Field.Store.YES, Field.Index.ANALYZED);
                         cat.Boost = 2.0f;
-                        Field subcat = new Field("subcat", xreader.GetAttribute("subcat"), Field.Store.YES, Field.Index.ANALYZED);
+                        String s = xreader.GetAttribute("subcat");
+                        Field subcat = new Field("subcat", xreader.GetAttribute("subcat"), Field.Store.YES, Field.Index.NOT_ANALYZED);
                         subcat.Boost = 3.0f;
                         if (xreader.Name == "question")
                             type = "question";
@@ -65,7 +67,8 @@ namespace Indexer1
                     else if (xreader.NodeType == XmlNodeType.EndElement && (xreader.Name == "question" || xreader.Name == "answer"))
                     {
                         writer.AddDocument(doc);
-                        Console.WriteLine(type + " with id: " + xreader.GetAttribute("id") + " has been indexed.");
+                        if (counter++%55 == 0)
+                            Console.Write(".");
            
                     }
 
