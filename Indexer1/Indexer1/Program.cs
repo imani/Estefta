@@ -43,7 +43,7 @@ namespace Indexer1
                         Field cat = new Field("cat", xreader.GetAttribute("cat"),Field.Store.YES, Field.Index.ANALYZED);
                         cat.Boost = 2.0f;
                         String s = xreader.GetAttribute("subcat");
-                        Field subcat = new Field("subcat", xreader.GetAttribute("subcat"), Field.Store.YES, Field.Index.NOT_ANALYZED);
+                        Field subcat = new Field("subcat", xreader.GetAttribute("subcat"), Field.Store.YES, Field.Index.ANALYZED);
                         if (xreader.Name == "question")
                             type = "question";
 

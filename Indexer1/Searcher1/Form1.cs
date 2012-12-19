@@ -18,31 +18,55 @@ namespace Searcher1
     {
         private String path = @"D:\ComputerEngineer\Meshhkat\Ahkam2\second_edit\";
         public IndexSearcher searcher;
-        public QueryParser parser;
+        public QueryParser text_parser;
+        public QueryParser cat_parser;
+        public QueryParser subcat_parser;
         public Indexer1.MyAnalyzer my_analyzer;
+        public XPathDocument categories;
+        public XPathNavigator nav;
         public Form1()
         {
             InitializeComponent();
             Lucene.Net.Store.Directory dir = FSDirectory.Open(@"..\..\..\LuceneIndex(q_boost15)");
             searcher = new IndexSearcher(dir, true);
             my_analyzer = new Indexer1.MyAnalyzer(Lucene.Net.Util.Version.LUCENE_CURRENT);
-            parser = new QueryParser(Lucene.Net.Util.Version.LUCENE_CURRENT, "text", my_analyzer);
-            
+            text_parser = new QueryParser(Lucene.Net.Util.Version.LUCENE_CURRENT, "text", my_analyzer);
+            cat_parser = new QueryParser(Lucene.Net.Util.Version.LUCENE_CURRENT, "cat", my_analyzer);
+            subcat_parser = new QueryParser(Lucene.Net.Util.Version.LUCENE_CURRENT, "subcat", my_analyzer);
 
 
         }
 
         private void Form1_Load(object sender, EventArgs e)
         {
-
+            String path = @"D:\ComputerEngineer\Meshhkat\Ahkam2\categories.xml";
+            categories = new XPathDocument(path);
+            nav = categories.CreateNavigator();
+            var expr = nav.Compile("//cat");
+            XPathNodeIterator iter = nav.Select(expr);
+            while (iter.MoveNext())
+            {
+                cmb_cat.Items.Add(iter.Current.Value);
+            }
         }
 
         private void btn_search_Click(object sender, EventArgs e)
         {
             txt_answer.ResetText();
-            var query = parser.Parse(txt_query.Text);
+            var query = text_parser.Parse(txt_query.Text);
             var queryString = String.Format("({0}) OR ({1}) OR ({2})", query, query.ToString().Replace("text", "cat"), query.ToString().Replace("text", "subcat"));
-            query = parser.Parse(queryString);
+            if (cmb_cat.SelectedItem != null)
+            {
+                var cat_query = cat_parser.Parse(cmb_cat.SelectedItem.ToString());
+                if (cmb_subcat.SelectedItem != null)
+                {
+                    Query subcat_query = subcat_parser.Parse(cmb_subcat.SelectedItem.ToString());
+                    queryString = String.Format("({0}) AND ({1}) AND ({2})", query, cat_query, subcat_query);
+                }
+                else
+                    queryString = String.Format("({0}) AND ({1})", query, cat_query);
+            }
+            query = text_parser.Parse(queryString);
             var result = searcher.Search(query,10);
             foreach (ScoreDoc sd in result.ScoreDocs)
             {
@@ -60,6 +84,19 @@ namespace Searcher1
             }
 
             
+            
+        }
+
+        private void cmb_cat_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            cmb_subcat.Items.Clear();
+            cmb_subcat.ResetText();
+            var expr = nav.Compile("//subcat[@cat='"+cmb_cat.SelectedItem+"']");
+            XPathNodeIterator iter = nav.Select(expr);
+            while(iter.MoveNext())
+            {
+                cmb_subcat.Items.Add(iter.Current.Value);
+            }
             
         }
 
