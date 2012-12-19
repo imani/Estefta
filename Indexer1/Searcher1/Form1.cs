@@ -23,7 +23,7 @@ namespace Searcher1
         public Form1()
         {
             InitializeComponent();
-            Lucene.Net.Store.Directory dir = FSDirectory.Open(@"..\..\..\LuceneIndex");
+            Lucene.Net.Store.Directory dir = FSDirectory.Open(@"..\..\..\LuceneIndex(q_boost15)");
             searcher = new IndexSearcher(dir, true);
             my_analyzer = new Indexer1.MyAnalyzer(Lucene.Net.Util.Version.LUCENE_CURRENT);
             parser = new QueryParser(Lucene.Net.Util.Version.LUCENE_CURRENT, "text", my_analyzer);
