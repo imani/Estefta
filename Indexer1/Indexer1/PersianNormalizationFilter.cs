@@ -17,6 +17,8 @@ namespace Indexer1
 
         public override bool IncrementToken()
         {
+            //if (_termAtt.Term.Length <= 2)
+            //    return false;
             if (input.IncrementToken())
             {
                 string normalized =  _normalizer.Normalize(_termAtt.Term, _termAtt.TermLength());

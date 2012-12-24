@@ -52,26 +52,40 @@ namespace Searcher1
 
         private void btn_search_Click(object sender, EventArgs e)
         {
+            int Score_adjuster = 0;
             txt_answer.ResetText();
             var query = text_parser.Parse(txt_query.Text);
             var queryString = String.Format("({0}) OR ({1}) OR ({2})", query, query.ToString().Replace("text", "cat"), query.ToString().Replace("text", "subcat"));
             if (cmb_cat.SelectedItem != null)
             {
+                Score_adjuster = -2;
                 var cat_query = cat_parser.Parse(cmb_cat.SelectedItem.ToString());
                 if (cmb_subcat.SelectedItem != null)
                 {
+                    Score_adjuster = -3;
                     Query subcat_query = subcat_parser.Parse(cmb_subcat.SelectedItem.ToString());
                     queryString = String.Format("({0}) AND ({1}) AND ({2})", query, cat_query, subcat_query);
                 }
                 else
                     queryString = String.Format("({0}) AND ({1})", query, cat_query);
             }
-            query = text_parser.Parse(queryString);
+            try
+            {
+                query = text_parser.Parse(queryString);
+            }
+            catch (Exception exp)
+            {
+                return;
+            }
+
             var result = searcher.Search(query,10);
+            var first = true;
             foreach (ScoreDoc sd in result.ScoreDocs)
             {
-                if (sd.Score < 0.1)
+                sd.Score += Score_adjuster;
+                if ((!first && sd.Score < 0.5) || sd.Score<0.1)
                     continue;
+                
                 var resdoc = searcher.Doc(sd.Doc);
                 XPathDocument xdoc = new XPathDocument(path + resdoc.Get("file"));
                 XPathNavigator nav = xdoc.CreateNavigator();
@@ -81,6 +95,8 @@ namespace Searcher1
                 while (iter.MoveNext())
                     txt_answer.AppendText(iter.Current.Value + "\n\n");
                 txt_answer.AppendText("\n\t\t-------------------------------------------------\n");
+                if (first == true)
+                    first = false;
             }
 
             
