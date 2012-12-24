@@ -1,10 +1,13 @@
+
 *.onetoc2
 *.dll
 *.dat
 *.resx
 *.nuspec
 *.nupkg
-
+Indexer1\LuceneIndex\*
+*
+.gitignore
 #################
 ## Eclipse
 #################
