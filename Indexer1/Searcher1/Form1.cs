@@ -30,7 +30,7 @@ namespace Searcher1
         public Form1()
         {
             InitializeComponent();
-            Lucene.Net.Store.Directory dir = FSDirectory.Open(@"..\..\..\LuceneIndex(q_boost15)");
+            Lucene.Net.Store.Directory dir = FSDirectory.Open(@"..\..\..\LuceneIndex(q_boost15_AND_PositionOffset)");
             searcher = new IndexSearcher(dir, true);
             my_analyzer = new Indexer1.MyAnalyzer(Lucene.Net.Util.Version.LUCENE_CURRENT);
             text_parser = new QueryParser(Lucene.Net.Util.Version.LUCENE_CURRENT, "text", my_analyzer);
@@ -86,18 +86,7 @@ namespace Searcher1
             
         }
 
-        private void cmb_cat_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            cmb_subcat.Items.Clear();
-            cmb_subcat.ResetText();
-            var expr = nav.Compile("//subcat[@cat='"+cmb_cat.SelectedItem+"']");
-            XPathNodeIterator iter = nav.Select(expr);
-            while(iter.MoveNext())
-            {
-                cmb_subcat.Items.Add(iter.Current.Value);
-            }
-            
-        }
+        
 
         private void trv_categories_AfterCheck(object sender, TreeViewEventArgs e)
         {

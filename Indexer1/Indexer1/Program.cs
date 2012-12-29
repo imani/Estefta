@@ -19,7 +19,7 @@ namespace Indexer1
         static void Main(string[] args)
         {
         
-           Lucene.Net.Store.Directory index_dir = FSDirectory.Open(@"..\..\..\LuceneIndex(q_boost15)");
+           Lucene.Net.Store.Directory index_dir = FSDirectory.Open(@"..\..\..\LuceneIndex(q_boost15_AND_PositionOffset)");
            Analyzer analyzer = new MyAnalyzer(Lucene.Net.Util.Version.LUCENE_CURRENT);
            IndexWriter writer = new IndexWriter(index_dir, analyzer, IndexWriter.MaxFieldLength.UNLIMITED);
            
@@ -60,7 +60,7 @@ namespace Indexer1
                     }
                     else if (xreader.NodeType == XmlNodeType.Text)
                     {
-                        Field text = new Field("text", xreader.Value, Field.Store.YES, Field.Index.ANALYZED, Field.TermVector.YES);
+                        Field text = new Field("text", xreader.Value, Field.Store.YES, Field.Index.ANALYZED, Field.TermVector.WITH_POSITIONS_OFFSETS);
                         if (type == "question")
                             text.Boost = 1.5f;
                         doc.Add(text);
