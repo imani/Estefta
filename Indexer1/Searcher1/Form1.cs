@@ -19,11 +19,14 @@ namespace Searcher1
         private String path = @"D:\ComputerEngineer\Meshhkat\Ahkam2\second_edit\";
         public IndexSearcher searcher;
         public QueryParser text_parser;
-        public QueryParser cat_parser;
-        public QueryParser subcat_parser;
         public Indexer1.MyAnalyzer my_analyzer;
         public XPathDocument categories;
         public XPathNavigator nav;
+        // check tree utilities
+        private List<String> checked_cats = new List<string>();
+        private List<String> checked_subcats = new List<string>();
+
+        private TopDocs result;
         public Form1()
         {
             InitializeComponent();
@@ -31,9 +34,6 @@ namespace Searcher1
             searcher = new IndexSearcher(dir, true);
             my_analyzer = new Indexer1.MyAnalyzer(Lucene.Net.Util.Version.LUCENE_CURRENT);
             text_parser = new QueryParser(Lucene.Net.Util.Version.LUCENE_CURRENT, "text", my_analyzer);
-            cat_parser = new QueryParser(Lucene.Net.Util.Version.LUCENE_CURRENT, "cat", my_analyzer);
-            subcat_parser = new QueryParser(Lucene.Net.Util.Version.LUCENE_CURRENT, "subcat", my_analyzer);
-
 
         }
 
@@ -42,33 +42,34 @@ namespace Searcher1
             String path = @"D:\ComputerEngineer\Meshhkat\Ahkam2\categories.xml";
             categories = new XPathDocument(path);
             nav = categories.CreateNavigator();
-            var expr = nav.Compile("//cat");
+            var expr = nav.Compile("//*");
             XPathNodeIterator iter = nav.Select(expr);
+            String category = null;
+            List<TreeNode> subcats = new List<TreeNode>() ;
             while (iter.MoveNext())
             {
-                cmb_cat.Items.Add(iter.Current.Value);
+                if(iter.Current.Name == "cat")
+                {
+                    if(subcats.Count != 0)
+                    {
+                        TreeNode cat_node = new TreeNode(category, subcats.ToArray());
+                        trv_categories.Nodes.Add(cat_node);
+                        subcats.Clear();
+                    }
+                    category = iter.Current.Value;
+                }
+                else if(iter.Current.Name == "subcat")
+                {
+                    subcats.Add(new TreeNode(iter.Current.Value));
+                }
             }
+            
         }
 
         private void btn_search_Click(object sender, EventArgs e)
         {
-            int Score_adjuster = 0;
-            txt_answer.ResetText();
             var query = text_parser.Parse(txt_query.Text);
             var queryString = String.Format("({0}) OR ({1}) OR ({2})", query, query.ToString().Replace("text", "cat"), query.ToString().Replace("text", "subcat"));
-            if (cmb_cat.SelectedItem != null)
-            {
-                Score_adjuster = -2;
-                var cat_query = cat_parser.Parse(cmb_cat.SelectedItem.ToString());
-                if (cmb_subcat.SelectedItem != null)
-                {
-                    Score_adjuster = -3;
-                    Query subcat_query = subcat_parser.Parse(cmb_subcat.SelectedItem.ToString());
-                    queryString = String.Format("({0}) AND ({1}) AND ({2})", query, cat_query, subcat_query);
-                }
-                else
-                    queryString = String.Format("({0}) AND ({1})", query, cat_query);
-            }
             try
             {
                 query = text_parser.Parse(queryString);
@@ -78,26 +79,8 @@ namespace Searcher1
                 return;
             }
 
-            var result = searcher.Search(query,10);
-            var first = true;
-            foreach (ScoreDoc sd in result.ScoreDocs)
-            {
-                sd.Score += Score_adjuster;
-                if ((!first && sd.Score < 0.5) || sd.Score<0.1)
-                    continue;
-                
-                var resdoc = searcher.Doc(sd.Doc);
-                XPathDocument xdoc = new XPathDocument(path + resdoc.Get("file"));
-                XPathNavigator nav = xdoc.CreateNavigator();
-                XPathExpression expr = nav.Compile("//*[@id=" + resdoc.Get("id") + "]");
-                XPathNodeIterator iter = nav.Select(expr);
-                txt_answer.AppendText("Score= " + sd.Score);
-                while (iter.MoveNext())
-                    txt_answer.AppendText(iter.Current.Value + "\n\n");
-                txt_answer.AppendText("\n\t\t-------------------------------------------------\n");
-                if (first == true)
-                    first = false;
-            }
+            result = searcher.Search(query,10);
+            ShowResult(result);
 
             
             
@@ -116,6 +99,76 @@ namespace Searcher1
             
         }
 
+        private void trv_categories_AfterCheck(object sender, TreeViewEventArgs e)
+        {
+            String item = e.Node.Text;
+            if (e.Node.Parent == null)
+                if (e.Node.Checked)
+                {
+                    checked_cats.Add(item);
+                }
+                else
+                    checked_cats.Remove(item);
+            else
+            {
+                if (e.Node.Checked)
+                    checked_subcats.Add(item);
+                else
+                    checked_subcats.Remove(item);
+            }
+
+            try
+            {
+                ShowResult(result);
+            }
+            catch (Exception ex)
+            {
+                return;
+            }
+        }
+
+        private void ShowResult(TopDocs result)
+        {
+
+            int Score_adjuster = 0;
+            var first = true;
+            txt_answer.ResetText();
+            foreach (ScoreDoc sd in result.ScoreDocs)
+            {
+                sd.Score += Score_adjuster;
+                if ((!first && sd.Score < 0.5) || sd.Score < 0.1)
+                    continue;
+
+                var resdoc = searcher.Doc(sd.Doc);
+                String res_cat = resdoc.GetField("cat").StringValue;
+                String res_subcat = resdoc.GetField("subcat").StringValue;
+                if (checked_cats.Count == 0)
+                {
+                    if (checked_subcats.Count != 0 && checked_subcats.Contains(res_subcat) == false)
+                        continue;
+                }
+                else
+                {
+                    if (checked_cats.Contains(res_cat) == false)
+                    {
+                        if (checked_subcats.Count == 0)
+                            continue;
+                        else if (checked_subcats.Contains(res_subcat) == false)
+                            continue;
+                    }
+                }
+                XPathDocument xdoc = new XPathDocument(path + resdoc.Get("file"));
+                XPathNavigator nav = xdoc.CreateNavigator();
+                XPathExpression expr = nav.Compile("//*[@id=" + resdoc.Get("id") + "]");
+                XPathNodeIterator iter = nav.Select(expr);
+                txt_answer.AppendText("Score= " + sd.Score);
+                while (iter.MoveNext())
+                    txt_answer.AppendText(iter.Current.Value + "\n\n");
+                txt_answer.AppendText("\n\t\t-------------------------------------------------\n");
+                if (first == true)
+                    first = false;
+            }
+        }
         
     }
 }

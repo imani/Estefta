@@ -35,13 +35,14 @@
             this.lbl_subcat = new System.Windows.Forms.Label();
             this.cmb_cat = new System.Windows.Forms.ComboBox();
             this.cmb_subcat = new System.Windows.Forms.ComboBox();
+            this.trv_categories = new System.Windows.Forms.TreeView();
             this.SuspendLayout();
             // 
             // txt_query
             // 
             this.txt_query.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.txt_query.Font = new System.Drawing.Font("B Yekan", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(178)));
-            this.txt_query.Location = new System.Drawing.Point(120, 26);
+            this.txt_query.Location = new System.Drawing.Point(143, 26);
             this.txt_query.Name = "txt_query";
             this.txt_query.Size = new System.Drawing.Size(418, 32);
             this.txt_query.TabIndex = 0;
@@ -75,7 +76,7 @@
             // 
             this.lbl_cat.AutoSize = true;
             this.lbl_cat.Font = new System.Drawing.Font("B Yekan", 10F);
-            this.lbl_cat.Location = new System.Drawing.Point(481, 85);
+            this.lbl_cat.Location = new System.Drawing.Point(504, 85);
             this.lbl_cat.Name = "lbl_cat";
             this.lbl_cat.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
             this.lbl_cat.Size = new System.Drawing.Size(50, 21);
@@ -87,7 +88,7 @@
             // 
             this.lbl_subcat.AutoSize = true;
             this.lbl_subcat.Font = new System.Drawing.Font("B Yekan", 10F);
-            this.lbl_subcat.Location = new System.Drawing.Point(461, 121);
+            this.lbl_subcat.Location = new System.Drawing.Point(484, 122);
             this.lbl_subcat.Name = "lbl_subcat";
             this.lbl_subcat.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
             this.lbl_subcat.Size = new System.Drawing.Size(70, 21);
@@ -100,7 +101,7 @@
             this.cmb_cat.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.cmb_cat.Font = new System.Drawing.Font("B Yekan", 8.25F);
             this.cmb_cat.FormattingEnabled = true;
-            this.cmb_cat.Location = new System.Drawing.Point(120, 85);
+            this.cmb_cat.Location = new System.Drawing.Point(143, 85);
             this.cmb_cat.Name = "cmb_cat";
             this.cmb_cat.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
             this.cmb_cat.Size = new System.Drawing.Size(355, 25);
@@ -112,17 +113,30 @@
             this.cmb_subcat.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.cmb_subcat.Font = new System.Drawing.Font("B Yekan", 8.25F);
             this.cmb_subcat.FormattingEnabled = true;
-            this.cmb_subcat.Location = new System.Drawing.Point(120, 121);
+            this.cmb_subcat.Location = new System.Drawing.Point(143, 121);
             this.cmb_subcat.Name = "cmb_subcat";
             this.cmb_subcat.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
             this.cmb_subcat.Size = new System.Drawing.Size(335, 25);
             this.cmb_subcat.TabIndex = 6;
             // 
+            // trv_categories
+            // 
+            this.trv_categories.CheckBoxes = true;
+            this.trv_categories.Font = new System.Drawing.Font("B Yekan", 8.25F);
+            this.trv_categories.Location = new System.Drawing.Point(571, 58);
+            this.trv_categories.Name = "trv_categories";
+            this.trv_categories.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
+            this.trv_categories.RightToLeftLayout = true;
+            this.trv_categories.Size = new System.Drawing.Size(210, 467);
+            this.trv_categories.TabIndex = 7;
+            this.trv_categories.AfterCheck += new System.Windows.Forms.TreeViewEventHandler(this.trv_categories_AfterCheck);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(573, 499);
+            this.ClientSize = new System.Drawing.Size(787, 543);
+            this.Controls.Add(this.trv_categories);
             this.Controls.Add(this.cmb_subcat);
             this.Controls.Add(this.cmb_cat);
             this.Controls.Add(this.lbl_subcat);
@@ -147,6 +161,7 @@
         private System.Windows.Forms.Label lbl_subcat;
         private System.Windows.Forms.ComboBox cmb_cat;
         private System.Windows.Forms.ComboBox cmb_subcat;
+        private System.Windows.Forms.TreeView trv_categories;
     }
 }
 
