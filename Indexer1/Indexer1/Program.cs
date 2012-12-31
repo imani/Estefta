@@ -24,7 +24,7 @@ namespace Indexer1
            IndexWriter writer = new IndexWriter(index_dir, analyzer, IndexWriter.MaxFieldLength.UNLIMITED);
            
             //reading files
-            String path = @"D:\ComputerEngineer\Meshhkat\Ahkam2\second_edit\";
+           String path = @"..\..\..\data\";
             DirectoryInfo dir = new DirectoryInfo(path);
             int counter = 0;
             foreach (FileInfo file in dir.GetFiles())

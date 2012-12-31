@@ -44,6 +44,7 @@
             this.txt_query.Size = new System.Drawing.Size(441, 32);
             this.txt_query.TabIndex = 0;
             this.txt_query.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            this.txt_query.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.txt_query_KeyPress);
             // 
             // btn_search
             // 

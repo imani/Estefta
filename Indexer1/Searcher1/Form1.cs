@@ -16,7 +16,7 @@ namespace Searcher1
 {
     public partial class Form1 : Form
     {
-        private String path = @"D:\ComputerEngineer\Meshhkat\Ahkam2\second_edit\";
+        private String path = @"..\..\..\data\";
         public IndexSearcher searcher;
         public QueryParser text_parser;
         public Indexer1.MyAnalyzer my_analyzer;
@@ -39,7 +39,7 @@ namespace Searcher1
 
         private void Form1_Load(object sender, EventArgs e)
         {
-            String path = @"D:\ComputerEngineer\Meshhkat\Ahkam2\categories.xml";
+            String path = @"..\..\..\data\categories.xml";
             categories = new XPathDocument(path);
             nav = categories.CreateNavigator();
             var expr = nav.Compile("//*");
@@ -158,6 +158,13 @@ namespace Searcher1
                     first = false;
             }
         }
-        
+
+        private void txt_query_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (e.KeyChar == 13)
+                btn_search_Click(sender, e);
+        }
+
+    
     }
 }

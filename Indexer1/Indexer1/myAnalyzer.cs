@@ -19,7 +19,7 @@ namespace Indexer1
         public MyAnalyzer(Version version)
         {
             _version = version;
-            var fileStream = new FileStream(@"..\..\..\Indexer1\" + DefaultStopwordFile,FileMode.Open);
+            var fileStream = new FileStream(@"..\..\..\data\" + DefaultStopwordFile,FileMode.Open);
             if (fileStream != null)
                 using (var reader = new StreamReader(fileStream))
                 {
