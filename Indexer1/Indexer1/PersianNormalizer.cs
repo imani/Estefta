@@ -2,7 +2,7 @@
 using SCICT.NLP.Persian;
 namespace Indexer1
 {
-    class PersianNormalizer
+    public class PersianNormalizer
     {
 
         public String Normalize(String input, int len)

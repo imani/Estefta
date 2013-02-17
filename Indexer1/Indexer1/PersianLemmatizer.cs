@@ -7,7 +7,7 @@ using SCICT.NLP.Morphology.Inflection;
 
 namespace Indexer1
 {
-    class PersianLemmatizer
+    public class PersianLemmatizer
     {
         private PersianSuffixLemmatizer lemmatizer;
         public PersianLemmatizer()
