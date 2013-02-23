@@ -16,7 +16,5 @@ namespace Indexer1
         {
             return !char.IsWhiteSpace(c) && !char.IsPunctuation(c) && !char.IsSymbol(c);
         }
-   
-             
     }
 }

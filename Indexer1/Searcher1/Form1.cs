@@ -10,6 +10,7 @@ using Lucene.Net.Search;
 using Lucene.Net.Store;
 using Lucene.Net.QueryParsers;
 using System.Xml.XPath;
+using System.IO;
 
 
 namespace Searcher1
@@ -25,6 +26,7 @@ namespace Searcher1
         // check tree utilities
         private List<String> checked_cats = new List<string>();
         private List<String> checked_subcats = new List<string>();
+        private Dictionary<String, List<String>> synonyms;
 
         private TopDocs result;
         public Form1()
@@ -63,13 +65,43 @@ namespace Searcher1
                     subcats.Add(new TreeNode(iter.Current.Value));
                 }
             }
+
+            path = @"..\..\..\data\";
+            synonyms = new Dictionary<string, List<string>>();
+            StreamReader reader = new StreamReader(path+"synonyms.txt", Encoding.UTF8);
+            while (!reader.EndOfStream)
+            {
+                String line = reader.ReadLine();
+                if (line.Length <= 0)
+                    continue;
+                line = line.Trim();
+                List<String> syms = line.Split(':','،',',').ToList<String>();
+                for (int i = 0; i < syms.Count; i++)
+                    syms[i] = syms[i].Trim();
+                String key = syms[0];
+                syms.RemoveAll(s => s.Length <= 0);
+                syms.RemoveAt(0);
+                if (synonyms.ContainsKey(key))
+                    synonyms[key].Concat(syms);
+                else
+                    synonyms.Add(key, syms);
+            }
             
         }
 
         private void btn_search_Click(object sender, EventArgs e)
         {
-            var query = text_parser.Parse(txt_query.Text);
-            var queryString = String.Format("({0}) OR ({1}) OR ({2})", query, query.ToString().Replace("text", "cat"), query.ToString().Replace("text", "subcat"));
+            String q = txt_query.Text;
+            foreach(String token in txt_query.Text.Split(' ','.','?'))
+            {
+                if( !synonyms.ContainsKey(token))
+                    continue;
+                foreach( String syn in synonyms[token])
+                    q = q + " " + syn;
+            }
+            var query = text_parser.Parse(q);
+            var cat_query = text_parser.Parse(txt_query.Text);
+            var queryString = String.Format("({0}) OR ({1}) OR ({2})", query, cat_query.ToString().Replace("text", "cat"), cat_query.ToString().Replace("text", "subcat"));
             try
             {
                 query = text_parser.Parse(queryString);
@@ -79,11 +111,8 @@ namespace Searcher1
                 return;
             }
 
-            result = searcher.Search(query,10);
-            ShowResult(result);
-
-            
-            
+            result = searcher.Search(query,20);
+            ShowResult(result);            
         }
 
         
@@ -118,15 +147,14 @@ namespace Searcher1
 
         private void ShowResult(TopDocs result)
         {
-
             int Score_adjuster = 0;
             var first = true;
             txt_answer.ResetText();
             foreach (ScoreDoc sd in result.ScoreDocs)
             {
                 sd.Score += Score_adjuster;
-                if ((!first && sd.Score < 0.5) || sd.Score < 0.1)
-                    continue;
+                //if ((!first && sd.Score < 0.5) || sd.Score < 0.1)
+                //    continue;
 
                 var resdoc = searcher.Doc(sd.Doc);
                 String res_cat = resdoc.GetField("cat").StringValue;
@@ -164,6 +192,16 @@ namespace Searcher1
             if (e.KeyChar == 13)
                 btn_search_Click(sender, e);
         }
+
+        private void showBestMatch(TopDocs result)
+        {
+            float max = 0;
+            foreach (ScoreDoc sd in result.ScoreDocs)
+            {
+
+            }
+        }
+
 
     
     }
